@@ -46,25 +46,25 @@ if(isMobile) {
 		.range(["#FF4E50","FE5D4B","#FD7244","#FD7144","#FC873D","#FBA034","#FABA2C","ECC335","F6E37C"]);
 
 	///////////////////////////////////////////////////////////////////////////
-	///////////////////////// Choose annotated songs //////////////////////////
+	///////////////////////// Choose annotated trends //////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 			
-	var interestingSongs = [
-		1989, //Oldest song - Billy Holiday
-		363, //Highest song from 2016 - Can't Stop The Feeling | Justin Timberlake
-		270, //Highest new song - Starman | David Bowie
+	var interestingtrends = [
+		1989, //Oldest trend - Billy Holiday
+		363, //Highest trend from 2016 - Can't Stop The Feeling | Justin Timberlake
+		270, //Highest new trend - Starman | David Bowie
 		144, //Highest riser - When We Were Young | Adele
-		232, //Pokemon song
+		232, //Pokemon trend
 	];
 
-	//David Bowie songs
+	//David Bowie trends
 	var DB = [7];
 
-	//Prince songs
+	//Prince trends
 	var PR = [13];
 
 	var strokeWidthColored = 1,	//The Beatles, Prince and David Bowie
-		strokeWidthRed = 1;		//Interesting Songs
+		strokeWidthRed = 1;		//Interesting trends
 		
 	///////////////////////////////////////////////////////////////////////////
 	//////////////////////////// Read in the data /////////////////////////////
@@ -105,7 +105,7 @@ if(isMobile) {
 		svg.append("g")
 	      .attr("class", "axis axis--x")
 	      .attr("transform", "translate(0," + (height/8) + ")")
-	      .call(d3.axisBottom(monthScale).tickFormat(d3.timeFormat("%Y-%m-%d")));
+	    //   .call(d3.axisBottom(monthScale).tickFormat(d3.timeFormat("%Y-%m-%d")));
 		  
 		svg.selectAll(".axis text")
 		  .attr("dy", "-0.25em");
@@ -114,30 +114,31 @@ if(isMobile) {
 		//////////////////////////// Draw the circles /////////////////////////////
 		///////////////////////////////////////////////////////////////////////////
 
-		//Wrapper for all songs
-	  	var songWrapper = svg.append("g")
-	      .attr("class", "song-wrapper");
+		//Wrapper for all trends
+	  	var trendWrapper = svg.append("g")
+	      .attr("class", "trend-wrapper");
 		  
-		//Create a group per song
-		var song = songWrapper.selectAll(".song-group")
+		//Create a group per trend
+		var trend = trendWrapper.selectAll(".trend-group")
 		  	.data(data)
 		  	.enter().append("g")
-		  	.attr("class", "song-group")
+		  	.attr("class", "trend-group")
 		  	.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
 		  	.on("mouseover", function(d) { 
 		  		console.log(d.artist, d.title, d.releaseYear, d.rank, d.listHighestRank); 
 
 		  		//Move the tooltip to the right location
-		  		tooltipSong.text(d.title);
+		  		tooltiptrend.text(d.title);
 		      	tooltipArtist.text(d.artist + " | " + d.releaseYear);
 		      	tooltipRank.text("排名 " + d.rank);
 		      	if(1) {
 		      		tooltipTop40.text("时间 " + d.releaseYear);
 		      	} else {
 		      		tooltipTop40.text("无");
-		      	}//else
+					}//else
+			
 		      	//Find the largest title
-		      	var maxSize = Math.max(document.getElementById("tooltipSong").getComputedTextLength(), 
+		      	var maxSize = Math.max(document.getElementById("tooltiptrend").getComputedTextLength(), 
 		      		document.getElementById("tooltipArtist").getComputedTextLength(), 
 		      		document.getElementById("tooltipRank").getComputedTextLength(),
 		      		document.getElementById("tooltipTop40").getComputedTextLength());
@@ -157,15 +158,15 @@ if(isMobile) {
 					.style("opacity", 0);
 		  	});
 
-		//The colored background for some songs (since I can't do an outside stroke)
-		song
-			.filter(function(d) { return d.artist === "The Beatles" || DB.indexOf(d.rank) > -1 || PR.indexOf(d.rank) > -1 || interestingSongs.indexOf(d.rank) > -1; })
+		//The colored background for some trends (since I can't do an outside stroke)
+		trend
+			.filter(function(d) { return d.artist === "The Beatles" || DB.indexOf(d.rank) > -1 || PR.indexOf(d.rank) > -1 || interestingtrends.indexOf(d.rank) > -1; })
 			.append("circle")
-			.attr("class", "song-background")
+			.attr("class", "trend-background")
 	      	.attr("r", function(d) { 
 	      		if(d.artist === "The Beatles" || DB.indexOf(d.rank) > -1 || PR.indexOf(d.rank) > -1) {
 					return rScale(d.rank) + strokeWidthColored;
-				} else if(interestingSongs.indexOf(d.rank) > -1) {
+				} else if(interestingtrends.indexOf(d.rank) > -1) {
 					return rScale(d.rank) + strokeWidthRed;
 				} else {
 					return -1; //check for error
@@ -174,7 +175,7 @@ if(isMobile) {
 		  	.style("fill", function(d) {
 			  	if(d.artist === "The Beatles") {
 				  	return "#46a1ef";
-			  	} else if (interestingSongs.indexOf(d.rank) > -1) {
+			  	} else if (interestingtrends.indexOf(d.rank) > -1) {
 				  	return "#CB272E";
 			  	} else if (DB.indexOf(d.rank) > -1) {
 				  	return "#f1aa11";
@@ -185,9 +186,9 @@ if(isMobile) {
 			  	}//else
 		  	});
 
-		//The grey scaled circle of the song
-		song.append("circle")
-			.attr("class", "song")
+		//The grey scaled circle of the trend
+		trend.append("circle")
+			.attr("class", "trend")
 	      	.attr("r", function(d) { return rScale(d.rank); })
 		  	.style("fill", function(d) { 
 			  	if(d.type === "decade") {
@@ -200,23 +201,23 @@ if(isMobile) {
 		  	});
 
 		//Colored piece of the "vinyl" part of the top 10
-		song
+		trend
 		  .filter(function(d) { return d.rank > 0 && d.rank <= 10; })
 		  .append("circle")
 	      .attr("r", function(d) { return rScale(d.rank)*0.8; })
 		  .style("fill", "#E3533B");
 		//White center of the "vinyl" part of the top 10
-		song
+		trend
 		  .filter(function(d) { return d.rank > 0 && d.rank <= 10; })
 		  .append("circle")
 	      .attr("r", function(d) { return rScale(d.rank)*0.065; })
 		  .style("fill", "#E3533B");
-		song
+		trend
 		  .filter(function(d) { return d.rank > 800 && d.rank <= 2000; })
 		  .append("circle")
 	      .attr("r", function(d) { return rScale(d.rank)*0.65; })
 		  .style("fill", "#F9D423");
-		song
+		trend
 		  .filter(function(d) { return d.rank > 500 && d.rank <= 800; })
 		  .append("circle")
 	      .attr("r", function(d) { return rScale(d.rank)*0.65; })
@@ -244,9 +245,9 @@ if(isMobile) {
 		  .attr("y", -4)
 		  .text("");
 
-		var tooltipSong = tooltipWrapper.append("text")
-		  .attr("class", "tooltip-song")
-		  .attr("id", "tooltipSong")
+		var tooltiptrend = tooltipWrapper.append("text")
+		  .attr("class", "tooltip-trend")
+		  .attr("id", "tooltiptrend")
 		  .attr("y", 17)
 		  .text("");
 
@@ -273,35 +274,37 @@ if(isMobile) {
 			.attr("class", "legend-title")
 			.attr("x", -13)
 			.attr("y", -40)
-			.text("热度");
+			.text("排名")
+			.style("fill", 'white');
 
 		var sizeDistance = [13,65,108,144,175,203,230,255,280];
-		sizeLegend.selectAll(".song-size")
+		sizeLegend.selectAll(".trend-size")
 			.data(rScale.range())
 			.enter().append("circle")
-			.attr("class", "song-size")
+			.attr("class", "trend-size")
 			.attr("cx", function(d,i) { return sizeDistance[i]; })
 			.attr("r", function(d) { return d; });
 
 		//Add small red and white circle to the first
-		sizeLegend.append("circle")
-			.attr("cx", sizeDistance[0])
-			.attr("r", rScale.range()[0] * 0.35)
-			.style("fill", "#CB272E");
-		sizeLegend.append("circle")
-			.attr("cx", sizeDistance[0])
-			.attr("r", rScale.range()[0] * 0.065)
-			.style("fill", "red");
+		// sizeLegend.append("circle")
+		// 	.attr("cx", sizeDistance[0])
+		// 	.attr("r", rScale.range()[0] * 0.35)
+		// 	.style("fill", "#CB272E");
+		// sizeLegend.append("circle")
+		// 	.attr("cx", sizeDistance[0])
+		// 	.attr("r", rScale.range()[0] * 0.065)
+		// 	.style("fill", "red");
 
 		//Add numbers below
 		var sizeFont = [14,13,12,11,10,9,9,8,8];
-		sizeLegend.selectAll(".song-legend-value")
+		sizeLegend.selectAll(".trend-legend-value")
 			.data(rScale.domain())
 			.enter().append("text")
-			.attr("class", "song-legend-value")
+			.attr("class", "trend-legend-value")
 			.attr("x", function(d,i) { return sizeDistance[i]; })
 			.attr("y", 45)
 			.style("font-size", function(d,i) { return sizeFont[i]; })
+			.style("fill",'white')
 			.text(function(d) { return d; })
 
 
@@ -317,47 +320,54 @@ if(isMobile) {
 			.attr("class", "legend-title")
 			.attr("x", -13)
 			.attr("y", -40)
-			.text("情绪");
+			.text("热度")
+			.style("fill", "white");	;
 
-		colorLegend.selectAll(".song-color")
+		colorLegend.selectAll(".trend-color")
 			.data(colorScale.range())
 			.enter().append("circle")
-			.attr("class", "song-color")
+			.attr("class", "trend-color")
 			.attr("cx", function(d,i) { return 2 * i * rScale(100)*1.2; })
 			.attr("r", rScale(100))
 			.style("fill", function(d) { return d; });	
 			//轴说明
 		//Add extra circle for never reached top 40
 		colorLegend.append("circle")
-			.attr("class", "song-color")
+			.attr("class", "trend-color")
 			.attr("cx", function(d,i) { return 2 * 9 * rScale(100)*1.2; })
 			.attr("r", rScale(100))
 			.style("fill", "#F9D423");	
 
 		//Add text below
 		colorLegend.append("text")
-			.attr("class", "song-legend-value")
+			.attr("class", "trend-legend-value")
 			.attr("x", 0)
 			.attr("y", 45)
 			.style("font-size", sizeFont[0])
+			.style("fill", "white")
 			.text("1");
+			
 		colorLegend.append("text")
-			.attr("class", "song-legend-value")
+			.attr("class", "trend-legend-value")
 			.attr("x", 2 * 6 * rScale(100)*1.2)
 			.attr("y", 45)
 			.style("font-size", sizeFont[0])
+			.style("fill", "white")
 			.text("40");
-		colorLegend.append("text")
-			.attr("class", "song-legend-value")
+			colorLegend.append("text")
+			.attr("class", "trend-legend-value")
 			.attr("x", 2 * 9 * rScale(100)*1.2)
 			.attr("y", 40)
 			.style("font-size", sizeFont[4])
+			.style("fill", "white")
 			.text("ok");
+			
 		colorLegend.append("text")
-			.attr("class", "song-legend-value")
+			.attr("class", "trend-legend-value")
 			.attr("x", 2 * 9 * rScale(100)*1.2)
 			.attr("y", 51)
 			.style("font-size", sizeFont[4])
+			.style("fill", "white")
 			.text("最后");
 
 	});//d3.csv
