@@ -70,7 +70,7 @@ if(isMobile) {
 	//////////////////////////// Read in the data /////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-	d3.csv('data/top2000_2016_positions.csv', function (error, data) {
+	d3.csv('data/weibo2000.csv', function (error, data) {
 
 		///////////////////////////////////////////////////////////////////////////
 		///////////////////////////// Final data prep /////////////////////////////
@@ -87,16 +87,16 @@ if(isMobile) {
 		});
 		
 		//Add a few more "circles" to the data that will make room for the decade numbers
-		var months = [2021-02-01,2021-02-02];
-		for(var i=0; i<1; i++) {
-			data.push({
-				rank: 0,
-				releaseYear: months[i],
-				// type: "month",
-				x: monthScale(months[i]),
-				y: height/2
-			});
-		}//for i
+		// var months = [2021-02-01,2021-02-02];
+		// for(var i=0; i<1; i++) {
+		// 	data.push({
+		// 		rank: 0,
+		// 		releaseYear: months[i],
+		// 		// type: "month",
+		// 		x: monthScale(months[i]),
+		// 		y: height/2
+		// 	});
+		// }//for i
 
 		///////////////////////////////////////////////////////////////////////////
 		///////////////////////////// Create the axis /////////////////////////////
