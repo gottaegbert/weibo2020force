@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <title>Histo-packing with d3-beeswarm</title>
+    <meta name="description" content="d3-beeswarm plugin example" />
+    <script src="https://unpkg.com/d3v4"></script>
+    <script src="https://unpkg.com/d3-jetpack-module"></script>
+    <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+    <script src="https://raw.githack.com/Kcnarf/d3-beeswarm/master/build/d3-beeswarm.js"></script>
+    <style>
+      body {
+        background: #212121;
+        margin: 20px;
+      }
+      text {
+        font-family: Avenir;
+        font-size: 18px;
+        fill: #fff;
+      }
+      .domain {
+        display: none;
+      }
+      .y .tick#_0 line {
+        stroke: #ccc;
+      }
+      .tick line {
+        stroke: #808080;
+      }
+      .y text {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      var width = 700,
+        height = 800,
+        margin = { top: 30, right: 20, bottom: 70, left: 5 },
+        // n = 1000,
+        // radius = 5.5,
+        // t = 3000;
+        // n = 2500,
+        // radius = 3.6,
+        // t = 4000;
+        n = 5000,
+        radius = 2.6,
+        t = 6000;
+
+      var svg = d3.select("body").append("svg").st({
+        width: width,
+        height: height,
+      });
+
+      var x = d3
+        .scaleLinear()
+        .range([margin.left, width - margin.right])
+        .domain([0, 100]);
+
+      var xScale = d3
+        .axisBottom()
+        .scale(x)
+        .ticks(10)
+        .tickSize(-(height - (margin.top + margin.bottom)));
+
+      var xAxis = svg
+        .append("g.axis.x")
+        .translate([0, height - margin.bottom])
+        .call(xScale)
+        .selectAll(".tick")
+        .at({
+          id: (d) => "_" + d,
+        })
+        .selectAll("text")
+        .at({
+          dy: 15,
+        });
+
+      var y = d3
+        .scaleLinear()
+        .range([height - margin.bottom, margin.top])
+        .domain([0, 100]);
+
+      var yScale = d3
+        .axisLeft()
+        .scale(y)
+        .ticks(10)
+        .tickSize(-(width - (margin.left + margin.right)));
+
+      var yAxis = svg
+        .append("g.axis.y")
+        .translate([margin.left, 0])
+        .call(yScale)
+        .selectAll(".tick")
+        .at({
+          id: (d) => "_" + d,
+        })
+        .filter((d) => d != 0)
+        .remove();
+
+      var colours = d3
+        .scaleLinear()
+        .range(["#FCAB27", "#FF2B4F"])
+        .domain([0, 30]);
+
+      var circlesData = [];
+
+      d3.json("coordinatorweibo.json", function (error, data) {
+        // arrange data from center to extremes
+        data = data
+          .filter((d) => d >= 0 && d <= 100)
+          .slice(0, n)
+          .sort((a, b) => Math.abs(a - 50) - Math.abs(b - 50));
+
+        // Run the line below if you want to bin the data, in this case by rounding to the nearest whole number
+        // data = data.map(d => +d3.format(".0f")(d));
+
+        // compute final beeswarm arrangement
+        var swarm = d3
+          .beeswarm()
+          .data(data)
+          .radius(radius)
+          .side("positive")
+          .distributeOn(function (d) {
+            return x(d);
+          });
+        var beeswarmArrangement = swarm.arrange();
+
+        // add circles and top, and define transitions to final placements
+        svg
+          .selectAll("circle")
+          .data(beeswarmArrangement)
+          .enter()
+          .append("circle")
+          .attrs({
+            cx: (d) => d.x,
+            cy: y(100) - radius - 20,
+            r: radius - 0.75,
+            fill: "#aaa",
+            stroke: "#aaa",
+            "stroke-width": 1,
+            "fill-opacity": 0.9,
+          })
+          .transition()
+          .ease(d3.easeLinear)
+          .delay(function (d, i) {
+            return i * (t / Math.pow(i + 1, 0.85));
+          })
+          .duration(function (d, i) {
+            return t / Math.pow(i + 2, 0.85);
+          })
+          .attr("cy", (d) => y(0) - d.y - radius)
+          .style("stroke", (d) =>
+            colours(Math.pow(Math.pow(d.datum - 50, 2) + Math.pow(d.y, 2), 0.5))
+          )
+          .style("fill", (d) =>
+            colours(Math.pow(Math.pow(d.datum - 50, 2) + Math.pow(d.y, 2), 0.5))
+          );
+      });
+    </script>
+  </body>
+</html>
+coordinatorweibo.json
