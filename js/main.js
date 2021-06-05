@@ -63,8 +63,8 @@ if(isMobile) {
 	//Prince trends
 	var PR = [13];
 
-	var strokeWidthColored = 1,	//The Beatles, Prince and David Bowie
-		strokeWidthRed = 1;		//Interesting trends
+	var strokeWidthColored = 0,	//The Beatles, Prince and David Bowie
+		strokeWidthRed = 0;		//Interesting trends
 		
 	///////////////////////////////////////////////////////////////////////////
 	//////////////////////////// Read in the data /////////////////////////////
@@ -159,32 +159,32 @@ if(isMobile) {
 		  	});
 
 		//The colored background for some trends (since I can't do an outside stroke)
-		trend
-			.filter(function(d) { return d.artist === "The Beatles" || DB.indexOf(d.rank) > -1 || PR.indexOf(d.rank) > -1 || interestingtrends.indexOf(d.rank) > -1; })
-			.append("circle")
-			.attr("class", "trend-background")
-	      	.attr("r", function(d) { 
-	      		if(d.artist === "The Beatles" || DB.indexOf(d.rank) > -1 || PR.indexOf(d.rank) > -1) {
-					return rScale(d.rank) + strokeWidthColored;
-				} else if(interestingtrends.indexOf(d.rank) > -1) {
-					return rScale(d.rank) + strokeWidthRed;
-				} else {
-					return -1; //check for error
-				}//else
-	      	})
-		  	.style("fill", function(d) {
-			  	if(d.artist === "The Beatles") {
-				  	return "#46a1ef";
-			  	} else if (interestingtrends.indexOf(d.rank) > -1) {
-				  	return "#CB272E";
-			  	} else if (DB.indexOf(d.rank) > -1) {
-				  	return "#f1aa11";
-			  	} else if (PR.indexOf(d.rank) > -1) {
-				  	return "#C287FF";
-			  	} else {
-				  	return "#C287FF";
-			  	}//else
-		  	});
+		// trend
+		// 	.filter(function(d) { return d.artist === "The Beatles" || DB.indexOf(d.rank) > -1 || PR.indexOf(d.rank) > -1 || interestingtrends.indexOf(d.rank) > -1; })
+		// 	.append("circle")
+		// 	.attr("class", "trend-background")
+	    //   	.attr("r", function(d) { 
+	    //   		if(d.artist === "The Beatles" || DB.indexOf(d.rank) > -1 || PR.indexOf(d.rank) > -1) {
+		// 			return rScale(d.rank) + strokeWidthColored;
+		// 		} else if(interestingtrends.indexOf(d.rank) > -1) {
+		// 			return rScale(d.rank) + strokeWidthRed;
+		// 		} else {
+		// 			return -1; //check for error
+		// 		}//else
+	    //   	})
+		//   	.style("fill", function(d) {
+		// 	  	if(d.artist === "The Beatles") {
+		// 		  	return "#46a1ef";
+		// 	  	} else if (interestingtrends.indexOf(d.rank) > -1) {
+		// 		  	return "#CB272E";
+		// 	  	} else if (DB.indexOf(d.rank) > -1) {
+		// 		  	return "#f1aa11";
+		// 	  	} else if (PR.indexOf(d.rank) > -1) {
+		// 		  	return "#C287FF";
+		// 	  	} else {
+		// 		  	return "#C287FF";
+		// 	  	}//else
+		//   	});
 
 		//The grey scaled circle of the trend
 		trend.append("circle")
@@ -204,7 +204,7 @@ if(isMobile) {
 		trend
 		  .filter(function(d) { return d.rank > 0 && d.rank <= 10; })
 		  .append("circle")
-	      .attr("r", function(d) { return rScale(d.rank)*0.8; })
+	      .attr("r", function(d) { return rScale(d.rank)*0.95; })
 		  .style("fill", "#E3533B");
 		//White center of the "vinyl" part of the top 10
 		trend
